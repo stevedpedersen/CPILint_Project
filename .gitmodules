@@ -1,0 +1,3 @@
+[submodule "cpilint"]
+	path = cpilint
+	url = git@github.com:stevedpedersen/cpilint.git

@@ -1,0 +1,6 @@
+- service: eat-jenkins
+  teamKey: jeas
+  jenkinsType: dev
+- service: eat-jenkins
+  teamKey: jeas
+  jenkinsType: release

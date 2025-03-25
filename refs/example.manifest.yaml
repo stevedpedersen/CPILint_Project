@@ -1,0 +1,87 @@
+common:
+  pipelineType: app-dev
+  debug: true
+
+  buildParameters:
+    packageSelection:
+      enabled: true
+      type: string
+      description: "Packages to lint (comma-separated)"
+      default: ""
+      manifestLocation: cpilint.packages
+
+    iflowSelection:
+      enabled: true
+      type: string
+      description: "Iflows to lint (comma-separated)"
+      default: ""
+      manifestLocation: cpilint.iflows
+
+  cpilint:
+    enabled: true
+    type: script
+    script: |
+      #!/bin/bash
+      RULES_FILE="rules/sp_rules.xml"
+      OUTPUT_FORMAT="json"
+      PACKAGES="${cpilint.packages}"
+      IFLOWS="${cpilint.iflows}"
+
+      COMMAND="java -jar cpilint.jar -rules ${RULES_FILE} -key credentials.json -output ${OUTPUT_FORMAT}"
+
+      if [[ -n "${PACKAGES}" ]]; then
+        IFS=',' read -ra PKG_ARRAY <<< "$PACKAGES"
+        for pkg in "${PKG_ARRAY[@]}"; do
+          COMMAND+=" -packages ${pkg}"
+        done
+      fi
+
+      if [[ -n "${IFLOWS}" ]]; then
+        IFS=',' read -ra IFLOW_ARRAY <<< "$IFLOWS"
+        for iflow in "${IFLOW_ARRAY[@]}"; do
+          COMMAND+=" -iflows ${iflow}"
+        done
+      fi
+
+      echo "Running CPILint command: ${COMMAND}"
+      ${COMMAND} > cpilint-results.json
+
+    allowBuildParameters: true
+
+  publish:
+    enabled: false
+
+  deploy:
+    enabled: false
+
+  lint:
+    enabled: false
+
+  unitTest:
+    enabled: false
+
+  staticAnalysis:
+    enabled: false
+
+  package:
+    enabled: false
+
+  buildAnalysis:
+    enabled: false
+
+  calculateChanges:
+    enabled: true
+
+  integrationTest:
+    enabled: false
+
+  prerelease:
+    type: none
+
+  release:
+    type: none
+
+environments:
+  dev:
+    cpilint:
+      enabled: true
