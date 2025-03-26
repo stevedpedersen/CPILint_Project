@@ -1,0 +1,27 @@
+# Common pipeline details across environments (defaults)
+---
+common:
+  debug: true
+  pipelineType: btp
+
+  buildParameters:
+    updateExternalizeParameters:
+      description: This execute POST DEPLOY phase to update the env parameters
+      enabled: true
+      type: boolean
+    updateValueMappingParameters:
+      description: This execute POST DEPLOY phase to update the value mapping parameters
+      enabled: true
+      type: boolean
+    iFlowsIncludedInStaticAnalysis:
+      decription: Comma-separated list of iFlow names to include with the CPILint static analysis stage.
+      enabled: true
+      type: string
+    rulesetForStaticAnalysis:
+      decription: Which set of rules to use for CPILint.
+      enabled: true
+      type: choiceParam
+      choices: 
+        - default
+        # - sox-compliant
+        # - strict
