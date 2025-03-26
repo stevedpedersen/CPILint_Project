@@ -374,42 +374,16 @@ public def getJsonFile(url, credentialsId, gitFolder, fileName) {
 }
 
 
-def runCpiLint(props, jobVars = [:]) {
-    def rulesFile = util.getValueHelper('rulesFile', 'rules/sp_rules.xml', props, jobVars?.cpilint)
-    def outputFormat = util.getValueHelper('output', 'json', props, jobVars?.cpilint)
-    def packages = util.getValueHelper('packages', '', props, jobVars?.cpilint)
-    def iflows = util.getValueHelper('iflows', '', props, jobVars?.cpilint)
-
-    ensure.inNode {
-        dir('cpilint') {
-            deleteDir()
-            scmlib.checkout(jobVars.projectRepo, jobVars.projectBranch, ['detach': false])
-
-            def cmd = "java -jar cpilint.jar -rules ${rulesFile} -key credentials.json -output ${outputFormat}"
-
-            if (packages) {
-                packages.split(',').each { pkg ->
-                    cmd += " -packages ${pkg.trim()}"
-                }
-            }
-
-            if (iflows) {
-                iflows.split(',').each { iflow ->
-                    cmd += " -iflows ${iflow.trim()}"
-                }
-            }
-
-            pPrint.info "Executing CPILint command: ${cmd}"
-            sh "${cmd} > cpilint-results.json"
-
-            archiveArtifacts artifacts: 'cpilint-results.json', fingerprint: true
-        }
-    }
-}
-
-
-import groovy.json.JsonSlurper
-
+/**
+ * btpRunStaticAnalysis - BTP pipeline static code analysis stage uses opensource CPILint command-line
+ *     tool to fetch remote iFlow artifacts and lint the raw xml exports. iFlows are evaluated based on
+ *     different rulesets, which users can specify in their manifest files. Custom rulesets can be added
+ *     to the repository if the existing ones don't meet your project requirements. Linting results are 
+ *     output as JSON files and then parsed to determine pass/fail of the static analysis stage.
+ *
+ * @param {props}
+ * @param {jobVars}
+ */
 def btpRunStaticAnalysis(props, jobVars = [:]) {
     def staticAnalysis = jobVars?.staticAnalysis
     if (!(staticAnalysis?.enabled && staticAnalysis?.type == 'cpilint')) {
@@ -417,40 +391,39 @@ def btpRunStaticAnalysis(props, jobVars = [:]) {
         return
     }
 
-    def artifactoryUrl = util.getValueHelper('artifactoryUrl', null, props, staticAnalysis)
-    def rulesFileUrl = getRulesFileUrl(staticAnalysis.ruleset)
-    def outputFormat = 'json' // explicitly json for parsing
+    def ruleset = util.getValueHelper('ruleset', 'default', props, staticAnalysis)
     def iflows = util.getValueHelper('iflows', '', props, staticAnalysis)
     def packageId = jobVars?.btp?.packageId
+
+    // Retrieve OAuth credentials from Jenkins
+    def oauthCredentialsId = util.getValueHelper('oauthCredentialsId', 'btp-oauth-creds', props, jobVars?.btp)
+    def tokenUrl = util.getValueHelper('tokenUrl', 'https://auth.example.com/oauth/token', props, jobVars?.btp)
+    def apiHost = util.getValueHelper('apiHost', 'api.example.com', props, jobVars?.btp)
 
     ensure.inNode {
         dir('cpilint') {
             deleteDir()
             scmlib.checkout(jobVars.projectRepo, jobVars.projectBranch, ['detach': false])
 
-            def cpilintJar = 'cpilint.jar'
-            def rulesFile = 'rules.xml'
-            def resultFile = 'cpilint-results.json'
-
-            withCredentials([usernamePassword(credentialsId: 'artifactory-creds', usernameVariable: 'ARTIFACTORY_USER', passwordVariable: 'ARTIFACTORY_PASSWORD')]) {
-                sh """
-                    curl -sS -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD} -o ${cpilintJar} ${artifactoryUrl}
-                    curl -sS -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD} -o ${rulesFile} ${rulesFileUrl}
-                """
-            }
-
-            def cmd = "java -jar ${cpilintJar} -rules ${rulesFile} -key credentials.json -output ${outputFormat} -packages ${packageId}"
+            def resultFile = "cpilint-${packageId}.json"
+            def cpilintCmd = "./bin/cpilint -boring -rules rules/${ruleset}.xml -url ${apiHost} -tokenurl ${tokenUrl} -output json -packages ${packageId}"
 
             if (iflows) {
                 iflows.split(',').each { iflow ->
-                    cmd += " -iflows ${iflow.trim()}"
+                    cpilintCmd += " -iflows ${iflow.trim()}"
                 }
             }
 
-            pPrint.info "Executing CPILint command: ${cmd}"
-            sh "${cmd} > ${resultFile}"
+            // Fetch client ID and secret from Jenkins
+            withCredentials([usernamePassword(credentialsId: oauthCredentialsId, usernameVariable: 'CLIENT_ID', passwordVariable: 'CLIENT_SECRET')]) {
+                cpilintCmd += " -clientid ${CLIENT_ID} -clientsecret ${CLIENT_SECRET}"
+                pPrint.info "Executing CPILint command: ${cpilintCmd}"
 
-            // Parse JSON clearly to decide if the stage should fail
+                // Run CPILint script with our final args
+                sh "${cpilintCmd} > ${resultFile}"
+            }
+
+            // Parse CPILint JSON output to decide pass/fail
             def jsonContent = readFile(resultFile).trim()
             def issues = new JsonSlurper().parseText(jsonContent)
 
@@ -464,10 +437,10 @@ def btpRunStaticAnalysis(props, jobVars = [:]) {
                 pPrint.info "CPILint found no issues."
             }
 
-            // Temporarily archive artifact clearly for pipeline diagnostics (if needed)
+            // Archive JSON output temporarily in case anyone needs to debug stuff
             archiveArtifacts artifacts: resultFile, fingerprint: true, allowEmptyArchive: true
 
-            // Optionally, delete JSON file if you don't want it permanently:
+            // Cleanup
             sh "rm -f ${resultFile}"
         }
     }
@@ -477,9 +450,9 @@ def btpRunStaticAnalysis(props, jobVars = [:]) {
 
 def getRulesFileUrl(ruleset) {
     def rulesMap = [
-        "default": "https://artifactrepo.jnj.com/artifactory/btp-cpilint-rules/default.xml",
-        "sox-compliant": "https://artifactrepo.jnj.com/artifactory/btp-cpilint-rules/sox-compliant.xml",  // TODO
-        "strict": "https://artifactrepo.jnj.com/artifactory/btp-cpilint-rules/strict.xml"                 // TODO
+        "default": "https://artifactrepo.jnj.com/artifactory/jeas-ivy/cpilint-1.0.5/rules/default.xml",
+        "sox-compliant": "https://artifactrepo.jnj.com/artifactory/jeas-ivy/cpilint-1.0.5/rules/sox-compliant.xml",  // TODO
+        "strict": "https://artifactrepo.jnj.com/artifactory/jeas-ivy/cpilint-1.0.5/rules/strict.xml"                 // TODO
     ]
     return rulesMap.get(ruleset, rulesMap["default"])
 }
