@@ -3,10 +3,8 @@ pipelineJob('btp-is-im/sp_dev_package/deploy-dev') {
     parameters {
         booleanParam('updateExternalizeParameters',false,'This execute POST DEPLOY phase to update the env parameters')
         booleanParam('updateValueMappingParameters',false,'This execute POST DEPLOY phase to update the value mapping parameters')
-
-        booleanParam('cpilint.enabled', false, 'Run CPILint Stage')
-        stringParam('cpilint.packages', '', 'CPILint Packages (comma-separated)')
-        stringParam('cpilint.iflows', '', 'CPILint Iflows (comma-separated)')
+        stringParam('iFlowsIncludedInStaticAnalysis', '', 'Comma-separated list of iFlow names to include in the CPILint staticAnalysis stage.')
+        choiceParam('rulesetForStaticAnalysis', ['default'], 'Select a ruleset to use with CPILint in the staticAnalysis stage.')
     }
     definition {
         cpsScm {
