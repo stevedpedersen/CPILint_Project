@@ -373,6 +373,100 @@ public def getJsonFile(url, credentialsId, gitFolder, fileName) {
     response.close();
 }
 
+/**
+ * btpRunStaticAnalysis - BTP pipeline static code analysis stage uses CPILint CLI
+ * tool to fetch remote iFlow artifacts and lint their XML exports. Evaluations
+ * use configurable rulesets. Linting results output as JSON and determine pass/fail.
+ *
+ * @param props Pipeline stage properties
+ * @param jobVars Pipeline job variables
+ */
+def btpRunStaticAnalysis(props, jobVars = [:]) {
+    def staticAnalysis = jobVars?.staticAnalysis
+    if (!(staticAnalysis?.enabled && staticAnalysis?.type == 'cpilint')) {
+        pPrint.info "StaticAnalysis stage disabled or not CPILint. Skipping."
+        return
+    }
+
+    def apiCredentialsId = util.getValueHelper('apiCredentialsId', null, props, jobVars?.btp)
+    def apiHost = util.getValueHelper('apiHost', null, props, jobVars?.btp)
+    def authHost = util.getValueHelper('authHost', null, props, jobVars?.btp)
+    def ruleset = util.getValueHelper('rulesetForStaticAnalysis', 'default', props, jobVars?.userParams, staticAnalysis)
+    def iFlows = util.getValueHelper('iFlowsIncludedInStaticAnalysis', '', props, jobVars?.userParams, staticAnalysis)
+    def packageId = util.getValueHelper('packageId', null, props, jobVars?.btp)
+    def artifactoryUrl = util.getValueHelper('url', null, props, jobVars?.artifactory)
+    def artifactPath = util.getValueHelper('artifactPath', null, props, jobVars?.artifactory)
+    def cpilintBuildVersion = util.getValueHelper('cpilintBuildVersion', '1.0.5', props, jobVars?.artifactory)
+    def dockerImage = util.getValueHelper('dockerImage', 'jnj.artifactrepo.jnj.com/jpm/openjdk:17-jdk-slim', props, jobVars?.artifactory)
+
+    ensure.inNode {
+        docker.image(dockerImage).inside {
+            dir('cpilint') {
+                deleteDir()
+
+                // Download and extract cpilint from Artifactory
+                artifactory.download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/bin/cpilint", "./bin")
+                sh "chmod +x ./bin/cpilint"
+
+                artifactory.download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/lib/", "./lib/")
+                artifactory.download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/rules/${ruleset}.xml", "./rules/${ruleset}.xml")
+                artifactory.download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/logback/logback.xml", "./logback/logback.xml")
+
+                def resultFile = "cpilint-${packageId}.json"
+                def cpilintCmd = """./bin/cpilint \
+                    -debug \
+                    -boring \
+                    -rules rules/${ruleset}.xml \
+                    -url ${apiHost} \
+                    -tokenurl https://${authHost}/oauth/token \
+                    -output json \
+                    -packages ${packageId} \
+                    -outputfile ${resultFile}"""
+
+                if (iFlows) {
+                    iFlows.split(',').each { iFlow ->
+                        cpilintCmd += " -iflows ${iFlow.trim()}"
+                    }
+                }
+
+                // Execute CPILint  with credentials
+                withCredentials([
+                    usernamePassword(credentialsId: apiCredentialsId, usernameVariable: 'CLIENT_ID', passwordVariable: 'CLIENT_SECRET')
+                ]) {
+                    cpilintCmd += " -clientid '${CLIENT_ID}' -clientsecret '${CLIENT_SECRET}'"
+                    pPrint.info "Executing CPILint command: ${cpilintCmd}"
+                    sh "${cpilintCmd}"
+                }
+
+                // Parse CPILint JSON to decide pass/fail
+                def jsonContent = readFile(resultFile).trim()
+                def issues = new JsonSlurper().parseText(jsonContent)
+
+                if (issues && issues.size() > 0) {
+                    pPrint.error "CPILint identified issues. Stage failing."
+                    issues.each { issue ->
+                        pPrint.error "iFlow [${issue.iflowId} - ${issue.iflowName}]: ${issue.message}"
+                    }
+                    error("CPILint found issues. See logs for details.")
+                } else {
+                    pPrint.info "CPILint found no issues."
+                }
+
+                // Archive JSON output for debug
+                archiveArtifacts artifacts: resultFile, fingerprint: true, allowEmptyArchive: true
+
+                // Cleanup
+                sh "rm -f ${resultFile}"
+            }
+        }
+    }
+}
+
+
+
+
+
+
 
 /**
  * btpRunStaticAnalysis - BTP pipeline static code analysis stage uses CPILint CLI
