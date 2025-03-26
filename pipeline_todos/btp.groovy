@@ -405,12 +405,12 @@ def btpRunStaticAnalysis(props, jobVars = [:]) {
                 deleteDir()
 
                 // Download and extract cpilint from Artifactory
-                artifactory.download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/bin/cpilint", "./bin")
+                download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/bin/cpilint", "./bin")
                 sh "chmod +x ./bin/cpilint"
 
-                artifactory.download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/lib/", "./lib/")
-                artifactory.download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/rules/${ruleset}.xml", "./rules/${ruleset}.xml")
-                artifactory.download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/logback/logback.xml", "./logback/logback.xml")
+                download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/lib/", "./lib/")
+                download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/rules/${ruleset}.xml", "./rules/${ruleset}.xml")
+                download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/logback/logback.xml", "./logback/logback.xml")
 
                 def resultFile = "cpilint-${packageId}.json"
                 def cpilintCmd = """./bin/cpilint \
