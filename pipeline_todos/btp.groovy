@@ -388,15 +388,14 @@ def btpRunStaticAnalysis(props, jobVars = [:]) {
         return
     }
 
-    def apiCredentialsId = util.getValueHelper('apiCredentialsId', null, props, jobVars?.btp)
-    def apiHost = util.getValueHelper('apiHost', null, props, jobVars?.btp)
+    def cpiApiCredsId = util.getValueHelper('cpiCredentialsId', null, props, jobVars?.btp)
+    def cpiApiHost = util.getValueHelper('cpiHost', null, props, jobVars?.btp)
     def authHost = util.getValueHelper('authHost', null, props, jobVars?.btp)
     def ruleset = util.getValueHelper('rulesetForStaticAnalysis', 'default', props, jobVars?.userParams, staticAnalysis)
     def iFlows = util.getValueHelper('iFlowsIncludedInStaticAnalysis', '', props, jobVars?.userParams, staticAnalysis)
     def packageId = util.getValueHelper('packageId', null, props, jobVars?.btp)
     def artifactoryUrl = util.getValueHelper('url', null, props, jobVars?.artifactory)
     def artifactPath = util.getValueHelper('artifactPath', null, props, jobVars?.artifactory)
-    def cpilintBuildVersion = util.getValueHelper('cpilintBuildVersion', '1.0.5', props, jobVars?.artifactory)
     def dockerImage = util.getValueHelper('dockerImage', 'jnj.artifactrepo.jnj.com/jpm/openjdk:17-jdk-slim', props, jobVars?.artifactory)
 
     ensure.inNode {
@@ -405,40 +404,57 @@ def btpRunStaticAnalysis(props, jobVars = [:]) {
                 deleteDir()
 
                 // Download and extract cpilint from Artifactory
-                download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/bin/cpilint", "./bin")
+                download(cpiApiCredsId, "${artifactoryUrl}/${artifactPath}/bin/cpilint", "./bin")
                 sh "chmod +x ./bin/cpilint"
 
-                download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/lib/", "./lib/")
-                download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/rules/${ruleset}.xml", "./rules/${ruleset}.xml")
-                download(apiCredentialsId, "${artifactoryUrl}/${artifactPath}/logback/logback.xml", "./logback/logback.xml")
+                download(cpiApiCredsId, "${artifactoryUrl}/${artifactPath}/lib/", "./lib/")
+                download(cpiApiCredsId, "${artifactoryUrl}/${artifactPath}/rules/${ruleset}.xml", "./rules/${ruleset}.xml")
+                download(cpiApiCredsId, "${artifactoryUrl}/${artifactPath}/logback/logback.xml", "./logback/logback.xml")
 
                 def resultFile = "cpilint-${packageId}.json"
                 def cpilintCmd = """./bin/cpilint \
                     -debug \
                     -boring \
                     -rules rules/${ruleset}.xml \
-                    -url ${apiHost} \
+                    -url ${cpiApiHost} \
                     -tokenurl https://${authHost}/oauth/token \
                     -output json \
-                    -packages ${packageId} \
-                    -outputfile ${resultFile}"""
+                    -packages ${packageId}
+                    """
 
                 if (iFlows) {
+                    cpilintCmd += " -iflows"
                     iFlows.split(',').each { iFlow ->
-                        cpilintCmd += " -iflows ${iFlow.trim()}"
+                        cpilintCmd += " ${iFlow.trim()}"
                     }
                 }
 
-                // Execute CPILint  with credentials
+                // Execute CPILint with credentials
                 withCredentials([
-                    usernamePassword(credentialsId: apiCredentialsId, usernameVariable: 'CLIENT_ID', passwordVariable: 'CLIENT_SECRET')
+                    usernamePassword(credentialsId: cpiApiCredsId, usernameVariable: 'CLIENT_ID', passwordVariable: 'CLIENT_SECRET')
                 ]) {
+                    def cmdLog = "Executing CPILint command: ${cpilintCmd}"
                     cpilintCmd += " -clientid '${CLIENT_ID}' -clientsecret '${CLIENT_SECRET}'"
-                    pPrint.info "Executing CPILint command: ${cpilintCmd}"
-                    sh "${cpilintCmd}"
+                    pPrint.info cmdLog
+
+                    try {
+                        sh "${cpilintCmd}"
+                    } catch (Exception e) {
+                        pPrint.error "Error while ${cmdLog}"
+                        return
+                    }
                 }
 
                 // Parse CPILint JSON to decide pass/fail
+                if (!resultFile) {
+                    pPrint.info "Could not find resultFile: ${resultFile}. Running ls command..."
+                    sh "ls -la > ${resultFile}"
+                    if (resultFile) {
+                        def dirContent = readFile(resultFile).trim()
+                        pPrint.info "\n\nDIRECTORY CONTENTS:\n$dirContent\n"
+                    }
+                }
+
                 def jsonContent = readFile(resultFile).trim()
                 def issues = new JsonSlurper().parseText(jsonContent)
 
@@ -460,98 +476,6 @@ def btpRunStaticAnalysis(props, jobVars = [:]) {
             }
         }
     }
-}
-
-
-
-
-
-
-
-/**
- * btpRunStaticAnalysis - BTP pipeline static code analysis stage uses CPILint CLI
- * tool to fetch remote iFlow artifacts and lint their XML exports. Evaluations
- * use configurable rulesets. Linting results output as JSON and determine pass/fail.
- *
- * @param props Pipeline stage properties
- * @param jobVars Pipeline job variables
- */
-def btpRunStaticAnalysis(props, jobVars = [:]) {
-    def staticAnalysis = jobVars?.staticAnalysis
-    if (!(staticAnalysis?.enabled && staticAnalysis?.type == 'cpilint')) {
-        pPrint.info "StaticAnalysis stage disabled or not CPILint. Skipping."
-        return
-    }
-
-    def apiCredentialsId = util.getValueHelper('apiCredentialsId', null, props, jobVars?.btp)
-    def apiHost = util.getValueHelper('apiHost', null, props, jobVars?.btp)
-    def tokenUrl = util.getValueHelper('tokenUrl', null, props, jobVars?.btp)
-
-    def ruleset = util.getValueHelper('ruleset', 'default', props, jobVars?.userParams, staticAnalysis)
-    def iFlows = util.getValueHelper('iFlowsIncludedInStaticAnalysis', '', props, jobVars?.userParams, staticAnalysis)
-    def packageId = util.getValueHelper('packageId', null, props, jobVars?.btp)
-    def rulesFileUrl = getRulesFileUrl(staticAnalysis.ruleset)
-    def outputFormat = util.getValueHelper('outputFormat', 'json', props, staticAnalysis)
-
-    def artifactoryUrl = util.getValueHelper('url', null, props, staticAnalysis)
-
-    ensure.inNode {
-        dir('cpilint') {
-            deleteDir()
-            scmlib.checkout(jobVars.projectRepo, jobVars.projectBranch, ['detach': false])
-
-            def resultFile = "cpilint-${packageId}.json"
-            def cpilintCmd = "./bin/cpilint -debug -boring -rules rules/${ruleset}.xml -url ${apiHost} -tokenurl ${tokenUrl} -output json -packages ${packageId}"
-
-            if (iFlows) {
-                iFlows.split(',').each { iFlow ->
-                    cpilintCmd += " -iflows ${iFlow.trim()}"
-                }
-            }
-
-            // Add clientId and clientSecret from Jenkins Credentials
-            withCredentials([
-                usernamePassword(credentialsId: apiCredentialsId, usernameVariable: 'CLIENT_ID', passwordVariable: 'CLIENT_SECRET')
-            ]) {
-                cpilintCmd += " -clientid '${CLIENT_ID}' -clientsecret '${CLIENT_SECRET}'"
-
-                pPrint.info "Executing CPILint command for package '${packageId}' with ruleset '${ruleset}'."
-
-                // Execute CPILint
-                sh "${cpilintCmd}"
-            }
-
-            // Parse CPILint JSON output to decide stage pass/fail
-            def jsonContent = readFile(resultFile).trim()
-            def issues = new JsonSlurper().parseText(jsonContent)
-
-            if (issues && issues.size() > 0) {
-                pPrint.error "CPILint identified issues. Stage failing."
-                issues.each { issue ->
-                    pPrint.error "iFlow [${issue.iflowId} - ${issue.iflowName}]: ${issue.message}"
-                }
-                error("CPILint found issues. See logs for details.")
-            } else {
-                pPrint.info "CPILint found no issues."
-            }
-
-            // Archive JSON output temporarily for debugging
-            archiveArtifacts artifacts: resultFile, fingerprint: true, allowEmptyArchive: true
-
-            // Cleanup after archiving
-            sh "rm -f ${resultFile}"
-        }
-    }
-}
-
-// CPILint Ruleset URLs
-def getRulesFileUrl(baseUrl, buildVersion, ruleset) {
-    def rulesMap = [
-        "default": "${baseUrl}/cpilint-${buildVersion}/rules/default.xml",
-        "sox-compliant": "${baseUrl}/cpilint-${buildVersion}/rules/sox-compliant.xml",
-        "strict": "${baseUrl}/cpilint-${buildVersion}/rules/strict.xml"
-    ]
-    return rulesMap.get(ruleset, rulesMap["default"])
 }
 
 return this
