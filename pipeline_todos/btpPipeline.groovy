@@ -28,6 +28,13 @@ def execute(jobManifest) {
         
     }
     commonPipeline.execute(jobManifest, props)
+
+    // Use CPILint as static analysis type
+    def jobVars = jobManifest.getJobVars()
+    def staticAnalysis = jobvars?.staticAnalysis
+    if (staticAnalysis?.enabled && (staticAnalysis?.type ?: '').equalsIgnoreCase('cpilint')) {
+        btpRunStaticAnalysis(props, jobVars)
+    }
 }
 
 /**
