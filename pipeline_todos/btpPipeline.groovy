@@ -25,14 +25,14 @@ def execute(jobManifest) {
         if (!jobVars?.btp) {
             jobVars.btp = [:]
         }
-        
     }
+    
     commonPipeline.execute(jobManifest, props)
 
     // Use CPILint as static analysis type
     def jobVars = jobManifest.getJobVars()
     def staticAnalysis = jobvars?.staticAnalysis
-    if (staticAnalysis?.enabled && (staticAnalysis?.type ?: '').equalsIgnoreCase('cpilint')) {
+    if (staticAnalysis?.enabled && (staticAnalysis?.type ?: '').equalsIgnoreCase('cpilint') && jobVars?.userParams?.rulesetForStaticAnalysis) {
         btpRunStaticAnalysis(props, jobVars)
     }
 }
@@ -52,7 +52,7 @@ def getDefaultJobVarsWithEnvironment(String pipelineType, String environment) {
                     dir: 'project'
             ],
             staticAnalysis: [
-                    enabled: true, // Sonar not supported until 9.5
+                    enabled: false, // Sonar not supported until 9.5
                     type: 'sonar'
             ],
             package: [
@@ -141,9 +141,9 @@ def getDefaultJobVarsWithEnvironment(String pipelineType, String environment) {
                 patternType: 'jnj-dev-branch',
                 confirmVersion: false
         ]
-    }else {
+    } else {
         defaults.staticAnalysis = [
-                enabled: true,
+                enabled: false,
                 type: 'sonar',
                 longLivedAnalysis: true
         ]
