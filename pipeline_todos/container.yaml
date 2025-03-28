@@ -1,0 +1,29 @@
+name: jpm/btp-lint
+
+tagStrategies:
+  main:
+    branches:
+      - main
+    tags:
+      - latest
+  develop:
+    branches:
+      - feature/*
+      - bugfix/*
+      - hotfix/*
+    tags:
+      - rc
+
+######   Additional Parameters   ######
+
+# Define how Docker Image pipeline should process this image. 
+# Default value - true. Supported values
+# true - build and upload to Artifactory
+# false - skip the build and upload to Artifactory. 
+build: true
+
+# Trim build context
+buildContext: _scm_container/btp-lint
+
+# Required for ASx projects only. Should map with the associated Artifactory Repository given by the EAT team.
+artifactoryRepository: jeas-docker-local
