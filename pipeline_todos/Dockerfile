@@ -12,7 +12,7 @@ COPY --from=jnj-docker.artifactrepo.jnj.com/zscaler-root-ca:9c56828d9951fa3ccfcb
 # Install required packages
 RUN apt-get update && \
     apt-get full-upgrade -yqq && \
-    apt-get install -yqq --no-install-recommends git tmux htop maven shellcheck unzip locales build-essential clang cmake gdb && \
+    apt-get install -yqq --no-install-recommends \
         curl \
         zip \
         unzip \
@@ -44,13 +44,12 @@ COPY rulesets/ ./rulesets/
 # COPY src/ ./src/
 COPY lib/ ./lib/
 COPY resources/ ./resources/
-# Include the cpilint release zip if it exists in your repo:
-COPY cpilint-release/ cpilint-release/ 
 
-# Install CPILint from the release zip
-RUN unzip cpilint-release/cpilint-latest-linux-amd64.zip -d /usr/local/bin && \
-    chmod +x /usr/local/bin/cpilint && \
-    rm cpilint-release/cpilint-latest-linux-amd64.zip
+
+# this makes no sense... we 
+# # Include the cpilint release zip if it exists in your repo:
+# COPY cpilint-release/ cpilint-release/ 
+
 
 # Default command to start a shell (adjust as needed)
 CMD ["bash"]

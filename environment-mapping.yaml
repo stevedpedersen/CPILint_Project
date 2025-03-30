@@ -1,6 +1,0 @@
-- jobNamePattern: '.*deploy-(.*)'
-  environment: '$1'
-- branchNamePattern: 'develop'
-  environment: 'DEV'
-- branchNamePattern: '(feature|bugfix|hotfix)/.*'
-  environment: 'PREDEV'
