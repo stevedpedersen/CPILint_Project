@@ -41,6 +41,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
 
 # Create and set working directory
 WORKDIR /cpilint
+# Make /cpilint writable for all (for testing)
+RUN chmod -R 777 /cpilint
 
 # --- LOCAL APPROACH ---
 # Copy the CPILint release zip (built from the cpilint submodule) into the image.
