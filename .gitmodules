@@ -1,6 +1,6 @@
 [submodule "cpilint"]
 	path = cpilint
-	url = git@github.com:stevedpedersen/cpilint.git
+	url = https://github.com/stevedpedersen/cpilint.git
 [submodule "sp_dev_package"]
 	path = sp_dev_package
 	url = https://sourcecode.jnj.com/scm/ASX-JGOJ/sp_dev_package.git
