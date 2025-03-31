@@ -28,8 +28,8 @@ WORKDIR /home/cpilint
 
 # --- LOCAL
 COPY cpilint/docker-release/cpilint-1.0.5-docker.zip ./cpilint-release.zip
-RUN unzip cpilint-release.zip -d ./runtime && rm cpilint-release.zip
-    
+RUN unzip cpilint-release.zip -d ./runtime && rm cpilint-release.zip && chmod +x /home/cpilint/runtime/bin/*
+
 # --- REMOTE
 # ARG VERSION
 # RUN curl -sSL "https://sourcecode.jnj.com/scm/asx-jeas/cpilint.git/docker-release/cpilint-${VERSION}-docker.zip" \
