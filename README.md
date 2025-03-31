@@ -37,7 +37,7 @@ ant docker-release
 
 2. **Build the Docker Image:**  
 ```bash
-docker build -t jeas-docker-local/cpilint:1.0.5-jnj.1 .
+docker build -t jeas-docker-local.artifactrepo.jnj.com/cpilint -t jeas-docker-local.artifactrepo.jnj.com/cpilint:1.0.5-jnj.1 -t jeas-docker-local.artifactrepo.jnj.com/cpilint:latest .
 ```
 
 
