@@ -34,67 +34,29 @@ In the cpilint submodule, run the docker-release target:
 ```bash
 ant docker-release
 ```
-This produces the release zip (e.g. `cpilint-1.0.5-docker.zip`) in `cpilint/docker-release/`.
 
 2. **Build the Docker Image:**  
-From the directory containing the Dockerfile (typically at the project root), run:
 ```bash
-docker build -t jeas-docker-local/cpilint:1.0.5 .
+docker build -t jeas-docker-local/cpilint:1.0.5-jnj.1 .
 ```
-This command builds the image with tag `jeas-docker-local/cpilint:1.0.5`.
+
 
 3. **Tag and Push the Image to Artifactory:**  
-Once built, tag the image for your Artifactory repository and push it:
 ```bash
-docker tag <IMAGE_ID> jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5
-# docker tag 162abb30c0ab jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5
-docker push jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5
-```
-Replace `<IMAGE_ID>` with the actual image ID shown by `docker images`.
+docker tag <IMAGE_ID> jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-jnj.1
+docker push jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-jnj.1
 
-### Pulling and Running the Image
+docker tag 160caa60c0ab jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
+docker push jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
+```
 
 To use the CPILint image without rebuilding, pull it from Artifactory:
 ```bash
-docker pull jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5
+docker pull jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-jnj.1
+docker run --rm jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-jnj.1 [options]
 ```
-Then run it with:
-```bash
-docker run --rm jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5 [options]
-```
-Replace `[options]` with any command-line options you want to pass to CPILint.
 
 ---
-
-### Additional Notes
-
-- **Tag "rc":**  
-  In the container.yaml, images built from non-main branches (e.g. feature, bugfix, hotfix) are tagged with "rc", which stands for release candidate.
-
-- **Jenkins Integration:**  
-  The CPILint stage (using the cpilint function in btp.groovy) restores package artifacts (via packageStashes) and runs inside a Docker container using your custom image. Refer to the btp.groovy and environment manifest updates for detailed configuration.
-
-- **Image Tagging Strategy:**  
-  The container.yaml defines tag strategies so that:
-  - Commits on the main branch are tagged as `latest`
-  - Other branches (feature/bugfix/hotfix) are tagged as `rc`
-  This ensures your local testing mimics your remote process.
-
----
-
-## CPILint - Linter for SAP Cloud Integration iFlows
-
-**CPILint** is a command-line tool for checking CPI integration flows (iFlows). It comes with built-in rules related to:
-
-- Developer guidelines
-
-- Naming conventions
-
-- Security checks
-
-You can choose which rules to apply, and CPILint will check your integration flows for compliance based on those rules.
-
-For more information on usage and options, refer to the [CPILint documentation](https://github.com/mwittrock/cpilint).
 
 ### How to Build the Docker Image with Jenkins Pipeline Manager (JPM)
 
