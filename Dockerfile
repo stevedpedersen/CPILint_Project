@@ -22,14 +22,23 @@ RUN curl -sSL -o jdk.deb https://corretto.aws/downloads/latest/amazon-corretto-1
     dpkg --install jdk.deb && rm -f jdk.deb
 
 
-RUN useradd -ms /bin/bash cpilint && mkdir -p /home/cpilint && chmod -R 777 /home/cpilint
+RUN useradd -ms /bin/bash cpilint 
+    # && mkdir -p /home/cpilint/runtime \
+    # && chown -R cpilint:cpilint /home/cpilint \
+    # && chmod -R 775 /home/cpilint
 USER cpilint
 WORKDIR /home/cpilint
 
 # --- LOCAL
 COPY cpilint/docker-release/cpilint-1.0.5-docker.zip ./cpilint-release.zip
-RUN unzip cpilint-release.zip -d ./runtime && rm cpilint-release.zip && chmod +x /home/cpilint/runtime/bin/*
-
+RUN unzip cpilint-release.zip -d ./runtime \
+    && rm cpilint-release.zip \
+    && chmod +x /home/cpilint/runtime/bin/* \
+    && echo "export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto" >> /home/cpilint/.bashrc \
+    && echo "export PATH=$PATH:$JAVA_HOME/bin" >> /home/cpilint/.bashrc \
+    && echo "export CPILINT_HOME=/home/cpilint/runtime" >> /home/cpilint/.bashrc \
+    && echo "export PATH=$PATH:$CPILINT_HOME/bin" >> /home/cpilint/.bashrc \
+    && echo "export CPILINT_JAVA_HOME=$JAVA_HOME" >> /home/cpilint/.bashrc 
 # --- REMOTE
 # ARG VERSION
 # RUN curl -sSL "https://sourcecode.jnj.com/scm/asx-jeas/cpilint.git/docker-release/cpilint-${VERSION}-docker.zip" \
