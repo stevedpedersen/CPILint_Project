@@ -23,26 +23,30 @@ RUN curl -sSL -o jdk.deb https://corretto.aws/downloads/latest/amazon-corretto-1
 
 
 RUN useradd -ms /bin/bash cpilint 
-    # && mkdir -p /home/cpilint/runtime \
-    # && chown -R cpilint:cpilint /home/cpilint \
-    # && chmod -R 775 /home/cpilint
+
 USER cpilint
 WORKDIR /home/cpilint
 
 # --- LOCAL
-COPY cpilint/docker-release/cpilint-1.0.5-docker.zip ./cpilint-release.zip
+COPY cpilint/docker-release/cpilint-1.0.5.zip ./cpilint-release.zip
 RUN unzip cpilint-release.zip -d ./runtime \
     && rm cpilint-release.zip \
-    && chmod +x /home/cpilint/runtime/bin/* \
-    && echo "export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto" >> /home/cpilint/.bashrc \
-    && echo "export PATH=$PATH:$JAVA_HOME/bin" >> /home/cpilint/.bashrc \
-    && echo "export CPILINT_HOME=/home/cpilint/runtime" >> /home/cpilint/.bashrc \
-    && echo "export PATH=$PATH:$CPILINT_HOME/bin" >> /home/cpilint/.bashrc \
-    && echo "export CPILINT_JAVA_HOME=$JAVA_HOME" >> /home/cpilint/.bashrc 
+    && chmod +x /home/cpilint/runtime/bin/*
+
 # --- REMOTE
 # ARG VERSION
 # RUN curl -sSL "https://sourcecode.jnj.com/scm/asx-jeas/cpilint.git/docker-release/cpilint-${VERSION}-docker.zip" \
 #   -o cpilint-release.zip && unzip cpilint-release.zip -d ./runtime && rm cpilint-release.zip
 
-# The image now contains the runtime artifacts under /cpilint/runtime.
+ENV JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
+ENV CPILINT_JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
+ENV CPILINT_HOME=/home/cpilint/runtime
+ENV LAUNCH_SCRIPT=$CPILINT_HOME/bin/cpilint
+ENV PATH=$PATH:$JAVA_HOME/bin:$LAUNCH_SCRIPT
+
+USER root
+RUN ln -s /home/cpilint/runtime/bin/cpilint /usr/local/bin/cpilint 
+
+USER cpilint
+
 CMD ["bash"]
