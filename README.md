@@ -43,17 +43,16 @@ docker build -t jeas-docker-local.artifactrepo.jnj.com/cpilint:1.0.5 .
 
 3. **Tag and Push the Image to Artifactory:**  
 ```bash
-docker tag <IMAGE_ID> jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-jnj.1
-docker push jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-jnj.1
-
-docker tag 160caa60c0ab jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
+docker tag <IMAGE_ID> jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
+# Example:
+# docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5 jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
 docker push jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
 ```
 
-To use the CPILint image without rebuilding, pull it from Artifactory:
+4. **To use the CPILint image without rebuilding, pull it from Artifactory:**
 ```bash
-docker pull jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-jnj.1
-docker run --rm jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-jnj.1 [options]
+docker pull jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
+docker run --rm jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest [options]
 ```
 
 ---
