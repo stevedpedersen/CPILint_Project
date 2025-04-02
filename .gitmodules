@@ -12,3 +12,4 @@
 	url = https://sourcecode.jnj.com/scm/asx-nagh/jpm_shared_lib.git
 [submodule "sp_jpm_tests"]
 	url = ssh://git@sourcecode.jnj.com:3268/asx-jgoj/sp_jpm_tests.git
+	path = sp_jpm_tests
