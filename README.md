@@ -62,3 +62,17 @@ docker run --rm jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest [optio
 Automatically built.
 
 ---
+
+
+.\scripts\cpilint.bat -skipvercheck -debug -boring -output json -rules rulesets\default.xml -key .env.json
+
+.\scripts\cpilint.bat -skipvercheck -debug -boring -output json -rules rulesets\default.xml  -f SP_IF_Sandbox.zip
+
+.\scripts\cpilint.bat -skipvercheck -debug -boring -rules rulesets\default.xml  -f SP_IF_Sandbox.zip
+
+.\scripts\cpilint.bat -skipvercheck -debug -boring -rules rulesets\default.xml -f SP_IF_Sandbox.zip
+
+
+.\scripts\cpilint.bat -skipvercheck -debug -rules rulesets\default.xml -unpacked-files resources\iflow-example-unzipped
+
+cpilint -rules <file> -unpacked-files
