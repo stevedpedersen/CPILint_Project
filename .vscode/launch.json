@@ -1,0 +1,67 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug Help",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": ["-help"],
+            "console": "internalConsole",
+            "classPaths": [
+                "cpilint/build/classes",
+                "cpilint/lib/compile/Saxon-HE-12.5.jar",
+                "cpilint/lib/compile/commons-cli-1.8.0.jar",
+                "cpilint/lib/compile/dom4j-2.1.4.jar",
+                "cpilint/lib/compile/json-20240303.jar",
+                "cpilint/lib/compile/logback-classic-1.5.6.jar",
+                "cpilint/lib/compile/logback-core-1.5.6.jar",
+                "cpilint/lib/compile/slf4j-api-2.0.13.jar",
+                "cpilint/lib/runtime/xmlresolver-5.2.2.jar",
+                "cpilint/lib/runtime/Saxon-HE-12.5.jar",
+                "cpilint/lib/runtime/commons-cli-1.8.0.jar",
+                "cpilint/lib/runtime/dom4j-2.1.4.jar",
+                "cpilint/lib/runtime/json-20240303.jar",
+                "cpilint/lib/runtime/logback-classic-1.5.6.jar",
+                "cpilint/lib/runtime/logback-core-1.5.6.jar",
+                "cpilint/lib/runtime/slf4j-api-2.0.13.jar",
+                "cpilint/dist-files/xerces-runtime-jars/cupv10k-runtime.jar",
+                "cpilint/dist-files/xerces-runtime-jars/org.eclipse.wst.xml.xpath2.processor_1.2.1.jar",
+                "cpilint/dist-files/xerces-runtime-jars/xercesImpl.jar",
+                "cpilint/logback/logback.xml"
+            ]
+        },
+        {
+            "type": "java",
+            "name": "Debug CPILint - Sample Rules",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": ["-rules", "rulesets/sample-rules.xml", "dist-files/samples/iflow-artifacts/sample-iflow.zip"],
+            "console": "internalConsole",
+            "classPaths": [
+                "cpilint/build/classes",
+                "cpilint/lib/compile/Saxon-HE-12.5.jar",
+                "cpilint/lib/compile/commons-cli-1.8.0.jar",
+                "cpilint/lib/compile/dom4j-2.1.4.jar",
+                "cpilint/lib/compile/json-20240303.jar",
+                "cpilint/lib/compile/logback-classic-1.5.6.jar",
+                "cpilint/lib/compile/logback-core-1.5.6.jar",
+                "cpilint/lib/compile/slf4j-api-2.0.13.jar",
+                "cpilint/lib/runtime/xmlresolver-5.2.2.jar",
+                "cpilint/lib/runtime/Saxon-HE-12.5.jar",
+                "cpilint/lib/runtime/commons-cli-1.8.0.jar",
+                "cpilint/lib/runtime/dom4j-2.1.4.jar",
+                "cpilint/lib/runtime/json-20240303.jar",
+                "cpilint/lib/runtime/logback-classic-1.5.6.jar",
+                "cpilint/lib/runtime/logback-core-1.5.6.jar",
+                "cpilint/lib/runtime/slf4j-api-2.0.13.jar",
+                "cpilint/dist-files/xerces-runtime-jars/cupv10k-runtime.jar",
+                "cpilint/dist-files/xerces-runtime-jars/org.eclipse.wst.xml.xpath2.processor_1.2.1.jar",
+                "cpilint/dist-files/xerces-runtime-jars/xercesImpl.jar",
+                "cpilint/logback/logback.xml"
+            ]
+        }
+    ]
+}

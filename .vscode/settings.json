@@ -2,5 +2,69 @@
     "DockerRun.DisableDockerrc": true,
     "DockerRun.Containers": [
         "8306b7c29a52"
+    ],
+    "java.project.sourcePaths": [
+        "cpilint/src"
+    ],
+    "java.project.outputPath": "cpilint/build/classes",
+    "java.project.resourcePaths": [
+        "cpilint/build/resources"
+    ],
+    "java.project.referencedLibraries": [
+        "cpilint/lib/compile/**/*.jar",
+        "cpilint/lib/runtime/**/*.jar",
+        "cpilint/dist-files/xerces-runtime-jars/**/*.jar",
+        "cpilint/logback/**/*.jar",
+        "cpilint/build/lib/**/*.jar"
+    ],
+    "java.import.projectClasspath": [
+        "cpilint/lib/compile",
+        "cpilint/lib/runtime",
+        "cpilint/dist-files/xerces-runtime-jars",
+        "cpilint/logback",
+        "cpilint/build/lib/*",
+        "cpilint/build/lib",
+        "cpilint/build/classes",
+        "cpilint/build/resources"
+    ],
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.import.generatesFiles": "prompt",
+    "java.format.settings.url": "",
+    "java.format.settings.profile": "",
+    "java.completion.enabled": true,
+    "java.debug.settings.console": "internalConsole",
+    "java.debug.settings.breakpoints": {
+        "skipClasses": [
+            "java.*",
+            "javax.*",
+            "com.sun.*",
+            "jdk.*",
+            "org.eclipse.*",
+            "org.springframework.*"
+        ]
+    },
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-17",
+            "path": "C:\\Users\\Steve\\.jdks\\jdk-17.0.14",
+            "default": true
+        }
+    ],
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.compile.problems": {
+        "maxProblems": 1000,
+        "maxPerFile": 100
+    },
+    "java.build.outputDirectory": "${workspaceFolder}/cpilint/build/classes",
+    "java.build.resourceDirectory": "${workspaceFolder}/cpilint/build/resources",
+    "java.build.sourceDirectories": [
+        "${workspaceFolder}/cpilint/src"
+    ],
+    "java.build.classpath": [
+        "${workspaceFolder}/cpilint/lib/compile/*",
+        "${workspaceFolder}/cpilint/lib/runtime/*",
+        "${workspaceFolder}/cpilint/dist-files/xerces-runtime-jars/*",
+        "${workspaceFolder}/cpilint/logback/*",
+        "${workspaceFolder}/cpilint/build/lib/*"
     ]
 }

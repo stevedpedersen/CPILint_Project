@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PurchaseOrderItems>
+    <PurchaseOrderItem>
+        <OrderDetails>
+            <PurchaseOrderDate>2021/05/27</PurchaseOrderDate>
+            <PurchaseOrderNumber>10001234</PurchaseOrderNumber>
+            <Supplier>100000042</Supplier>
+        </OrderDetails>
+        <ItemDetails>
+            <SupplierMaterialGroup>Scanners</SupplierMaterialGroup>
+            <Item>10</Item>
+            <PriceTotal>178</PriceTotal>
+            <ItemWeightUnit>KG</ItemWeightUnit>
+            <ItemNetWeight>2.40</ItemNetWeight>
+            <PricePerUnit>89.00</PricePerUnit>
+            <OrderQuantityUnit>EA</OrderQuantityUnit>
+            <SupplierMaterial>Power Scan</SupplierMaterial>
+            <OrderQuantity>2</OrderQuantity>
+        </ItemDetails>
+    </PurchaseOrderItem>
+    <PurchaseOrderItem>
+        <OrderDetails>
+            <PurchaseOrderDate>2021/05/27</PurchaseOrderDate>
+            <PurchaseOrderNumber>10001234</PurchaseOrderNumber>
+            <Supplier>100000042</Supplier>
+        </OrderDetails>
+        <ItemDetails>
+            <SupplierMaterialGroup>Scanners</SupplierMaterialGroup>
+            <Item>20</Item>
+            <PriceTotal>676</PriceTotal>
+            <ItemWeightUnit>KG</ItemWeightUnit>
+            <ItemNetWeight>3.20</ItemNetWeight>
+            <PricePerUnit>169.00</PricePerUnit>
+            <OrderQuantityUnit>EA</OrderQuantityUnit>
+            <SupplierMaterial>Jet Scan Professional</SupplierMaterial>
+            <OrderQuantity>4</OrderQuantity>
+        </ItemDetails>
+    </PurchaseOrderItem>
+</PurchaseOrderItems>

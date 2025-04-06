@@ -1,0 +1,205 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug Help",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": ["-help"],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Local Directory (Basic)",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/default.xml",
+                "-directory",
+                "${workspaceFolder}/cpilint/resources/iflow-example-unzipped"
+            ],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Local Directory (Verbose)",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/default.xml",
+                "-directory",
+                "${workspaceFolder}/cpilint/resources/iflow-example-unzipped",
+                "-boring"
+            ],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Single File",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/default.xml",
+                "-files",
+                "${workspaceFolder}/cpilint/resources/iflow-example-unzipped/src/main/resources/scenarioflows/integrationflow/IF_LINT.iflw"
+            ],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Multiple Files",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/default.xml",
+                "-files",
+                "${workspaceFolder}/cpilint/resources/iflow-example-unzipped/src/main/resources/scenarioflows/integrationflow/*.iflw"
+            ],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Tenant Packages (Basic)",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/default.xml",
+                "-packages",
+                "SPJPMTests"
+            ],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Tenant Packages (Advanced)",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-boring",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/default.xml",
+                "-packages",
+                "SPJPMTests",
+                "-skip-iflows",
+                "-skip-sap-packages"
+            ],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Version Check",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": ["-vercheck"],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Cloud Integration (Basic)",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/default.xml",
+                "-host",
+                "your-host",
+                "-username",
+                "your-username"
+            ],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Cloud Integration (Advanced)",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-boring",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/default.xml",
+                "-host",
+                "your-host",
+                "-username",
+                "your-username",
+                "-skip-drafts"
+            ],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Rule Set",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/custom.xml",
+                "-directory",
+                "${workspaceFolder}/cpilint/resources/iflow-example-unzipped"
+            ],
+            "console": "internalConsole"
+        },
+        {
+            "type": "java",
+            "name": "Debug Key File",
+            "request": "launch",
+            "mainClass": "org.cpilint.CliClient",
+            "projectName": "cpilint",
+            "args": [
+                "-debug",
+                "-output",
+                "json",
+                "-rules",
+                "rulesets/default.xml",
+                "-key",
+                "${workspaceFolder}/cpilint/resources/.env.json",
+                "-directory",
+                "${workspaceFolder}/cpilint/resources/iflow-example-unzipped"
+            ],
+            "console": "internalConsole"
+        }
+    ]
+}

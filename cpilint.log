@@ -1,0 +1,30 @@
+17:03:44.634 INFO  org.cpilint.CliClient - CPILint version 1.0.5
+17:03:44.652 DEBUG org.cpilint.CliClient - java.version = 17.0.14
+17:03:44.652 DEBUG org.cpilint.CliClient - java.vendor = OpenLogic
+17:03:44.652 DEBUG org.cpilint.CliClient - java.vm.version = 17.0.14+7-adhoc..jdk17u
+17:03:44.652 DEBUG org.cpilint.CliClient - java.vm.vendor = OpenLogic
+17:03:44.652 DEBUG org.cpilint.CliClient - java.vm.name = OpenJDK 64-Bit Server VM
+17:03:44.652 DEBUG org.cpilint.CliClient - os.name = Windows 10
+17:03:44.652 DEBUG org.cpilint.CliClient - os.arch = amd64
+17:03:44.652 DEBUG org.cpilint.CliClient - os.version = 10.0
+17:03:44.653 INFO  org.cpilint.CliClient - Launching CliClient
+17:03:44.653 DEBUG org.cpilint.CliClient - Command line arguments provided: '-skipvercheck' '-debug' '-rules' 'cpilint\rulesets\default.xml' '-unpacked-files' '.\sp_jpm_tests\IntegrationContent\IF_LINT\' '-output' 'json'
+17:03:44.657 INFO  org.cpilint.CliClient - Command line arguments parsed successfully
+17:03:44.658 INFO  org.cpilint.CliClient - Run mode detected: UNPACKED_FILE_SUPPLIER_MODE
+17:03:44.666 INFO  org.cpilint.RulesFile - Processing rules file 'cpilint\rulesets\default.xml'
+17:03:44.666 DEBUG org.cpilint.RulesFile - Canonical rules file path: D:\workspace\cpilint_project\CPILint_With_JPM\cpilint\rulesets\default.xml
+17:03:44.880 INFO  org.cpilint.RulesFile - Rules file XML is valid
+17:03:45.045 DEBUG org.cpilint.RulesFile - RulesFile created with 9 rule(s) and 0 exemption(s)
+17:03:45.048 INFO  org.cpilint.CliClient - Output filename: cpilint-results.json
+17:03:45.050 INFO  org.cpilint.CliClient - Skipping version check
+17:03:45.051 INFO  org.cpilint.CpiLint - Starting inspection of iflow artifacts
+17:03:45.454 DEBUG org.cpilint.CpiLint - Iflow artifact supplied: IflowArtifactTag[id=IF_LINT,name=IF_LINT,packageinfo=Optional.empty]
+17:03:45.477 DEBUG o.c.rules.NamingConventionsRule - Checking HTTP_RECEIVER_CHANNEL_NAME name 'HTTP_JnJ'
+17:03:45.477 DEBUG o.c.rules.NamingConventionsRule - Name is not compliant ('HTTP receiver channel names must start with HTTP_RCV_')
+17:03:45.481 DEBUG o.c.rules.NamingConventionsRule - Checking SENDER_NAME name 'Sender'
+17:03:45.481 DEBUG o.c.rules.NamingConventionsRule - Name is not compliant ('Sender Participant names must start with S_')
+17:03:45.481 DEBUG o.c.rules.NamingConventionsRule - Checking RECEIVER_NAME name 'Receiver'
+17:03:45.533 INFO  org.cpilint.CpiLint - Inspection completed
+17:03:45.540 INFO  org.cpilint.CliClient - Iflow artifacts supplied: 1
+17:03:45.540 INFO  org.cpilint.CliClient - Issues found: 2
+17:03:45.541 INFO  org.cpilint.CliClient - Exiting CliClient with status 1
