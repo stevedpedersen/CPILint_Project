@@ -13,3 +13,6 @@
 [submodule "sp_jpm_tests"]
 	url = https://sourcecode.jnj.com/scm/asx-jgoj/sp_jpm_tests.git
 	path = sp_jpm_tests
+[submodule "bundle_jpm_cpilint/btp-cpilint-reports-template"]
+	path = bundle_jpm_cpilint/btp-cpilint-reports-template
+	url = https://sourcecode.jnj.com/scm/asx-jeas/btp-cpilint-reports-template.git

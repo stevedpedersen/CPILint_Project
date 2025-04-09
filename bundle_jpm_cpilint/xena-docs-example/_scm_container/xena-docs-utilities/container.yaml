@@ -1,0 +1,6 @@
+name: xena/xena-docs-utilities
+tags:
+  - ${Major}.${Minor}.${Patch}
+  - latest
+build: true
+artifactory_repository: jnj

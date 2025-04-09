@@ -1,0 +1,22 @@
+{
+  "name": "xena-docs-example",
+  "version": "1.0.0",
+  "description": "An example repository with sourcecode controlled documentation.",
+  "scripts": {
+    "prepare": "husky",
+    "serve": "npx http-server docs --port 8081",
+    "lint": "npm run format && npm run spellcheck && npm run lint:markdown",
+    "lint:markdown": "npx markdownlint \"**/*.+(md)\"",
+    "format": "npx prettier --write \"**/*.+(md)\"",
+    "format:check": "npx prettier --check \"**/*.+(md)\"",
+    "spellcheck": "npx cspell \"**/*.+(md)\""
+  },
+  "devDependencies": {
+    "cspell": "^5.6.6",
+    "http-server": "^0.12.3",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.1.1",
+    "markdownlint-cli": "^0.28.1",
+    "prettier": "2.3.2"
+  }
+}
