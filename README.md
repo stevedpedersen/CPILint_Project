@@ -37,12 +37,14 @@ ant docker-release
 
 2. **Build the Docker Image:**  
 ```bash
-docker build -t jeas-docker-local.artifactrepo.jnj.com/cpilint:1.0.5 .
+docker build -t jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5 .
+docker build -t jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5 . --no-cache
 ```
 
 
 3. **Tag and Push the Image to Artifactory:**  
 ```bash
+docker tag <IMAGE_ID> jeas-docker-local.artifactrepo.jnj.com:443/cpilint
 docker tag <IMAGE_ID> jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
 # Example:
 # docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5 jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
