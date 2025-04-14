@@ -1,4 +1,0 @@
-# Specify which service to subscribe to.
-- service: scm-container-image
-  # Desired environment (Beta/Production)
-  environment: Production

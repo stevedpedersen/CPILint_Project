@@ -1,3 +1,0 @@
-{
-  "*.md": ["npx prettier --write", "npx cspell check", "npx markdownlint"]
-}
