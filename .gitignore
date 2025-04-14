@@ -2,3 +2,9 @@ Zscaler*
 
 .DS_Store
 iflow-plotter/node_modules
+bundle_jpm_cpilint/iflow-plotter/node_modules/
+bundle_jpm_cpilint
+**/node_modules/
+**/.local-chromium/
+*.dll
+*.exe
