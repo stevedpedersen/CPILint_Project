@@ -1,8 +1,0 @@
-1. This project consists of 4-5 git submodules which all comprise the overall project with one main goal: 
-    - Integrate command line tool `CPILint` with my company's CI/CD Jenkins Framework called `JPM` (Jenkins Pipeline Manager).
-    - Reduce manual code review through automated linting rules on iflows for SAP Cloud Integration.
-2. CPILint build system is Ant & Ivy for Dependencies, though it comes with some local jar deps too.
-3. JPM is the other main module, this is a massive multi-lingual framework. The pipeline I'm working on is only for CPI.
-4. I have created an integration framework for CPI at work, which we call ILCD (initialize, log, conclude, distribute), which is just a logging/error/notify framework. 
-    - Some of the customizations to CPILint involve getting ILCD rules in place, like the /cpilint/rules/ContentModifierPositionRule.java rule.
-5. Always look for a solution that uses ineritance, extensibility first beofre changing core code.
