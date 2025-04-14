@@ -34,8 +34,8 @@ RUN unzip cpilint-release.zip -d ./runtime \
 # RUN curl -sSL "https://sourcecode.jnj.com/scm/asx-jeas/cpilint.git/docker-release/cpilint-${VERSION}-docker.zip" \
 #   -o cpilint-release.zip && unzip cpilint-release.zip -d ./runtime && rm cpilint-release.zip
 
-ENV JAVA_HOME=/usr/local/openjdk
-ENV CPILINT_JAVA_HOME=/usr/local/openjdk
+ENV JAVA_HOME=/usr/local/openjdk-17
+ENV CPILINT_JAVA_HOME=/usr/local/openjdk-17
 ENV CPILINT_HOME=/home/cpilint/runtime
 ENV LAUNCH_SCRIPT=$CPILINT_HOME/bin/cpilint
 ENV PATH=$PATH:$JAVA_HOME/bin:$LAUNCH_SCRIPT
