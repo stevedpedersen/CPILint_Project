@@ -35,23 +35,15 @@ In the cpilint submodule, run the docker-release target:
 ant docker-release
 ```
 
-2. **Build the Docker Image:**  
+2. **Build the Docker Image + Tag + Push:**  
 ```bash
-docker build -t jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5 .
-docker build -t jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5 . --no-cache
+docker build --no-cache -t jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-temurin-01 . 
+docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-temurin-01 jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
+docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-temurin-01 jeas-docker-local.artifactrepo.jnj.com:443/cpilint
+docker push -a jeas-docker-local.artifactrepo.jnj.com:443/cpilint
 ```
 
-
-3. **Tag and Push the Image to Artifactory:**  
-```bash
-docker tag <IMAGE_ID> jeas-docker-local.artifactrepo.jnj.com:443/cpilint
-docker tag <IMAGE_ID> jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
-# Example:
-# docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5 jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
-docker push jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
-```
-
-4. **To use the CPILint image without rebuilding, pull it from Artifactory:**
+**To use the CPILint image without rebuilding, pull it from Artifactory:**
 ```bash
 docker pull jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
 docker run --rm jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest [options]
@@ -78,3 +70,12 @@ Automatically built.
 .\scripts\cpilint.bat -skipvercheck -debug -rules rulesets\default.xml -unpacked-files resources\iflow-example-unzipped
 
 cpilint -rules <file> -unpacked-files
+
+
+2. **Build the Docker Image + Tag + Push:**  
+```bash
+docker build --no-cache -t jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-openjdk . 
+docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-openjdk jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
+docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-openjdk jeas-docker-local.artifactrepo.jnj.com:443/cpilint
+docker push -a jeas-docker-local.artifactrepo.jnj.com:443/cpilint
+```

@@ -1,10 +1,11 @@
 FROM jnj-docker.artifactrepo.jnj.com/eclipse-temurin:17-jdk-alpine
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
 RUN apk update && \
     apk add --no-cache curl unzip bash && \
     adduser -D -s /bin/bash cpilint
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 
 USER cpilint
 WORKDIR /home/cpilint
