@@ -37,9 +37,9 @@ ant docker-release
 
 2. **Build the Docker Image + Tag + Push:**  
 ```bash
-docker build --no-cache -t jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-temurin-01 . 
-docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-temurin-01 jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
-docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-temurin-01 jeas-docker-local.artifactrepo.jnj.com:443/cpilint
+docker build --no-cache -t jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-temurin-03 . 
+docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-temurin-03 jeas-docker-local.artifactrepo.jnj.com:443/cpilint:latest
+docker tag jeas-docker-local.artifactrepo.jnj.com:443/cpilint:1.0.5-temurin-03 jeas-docker-local.artifactrepo.jnj.com:443/cpilint
 docker push -a jeas-docker-local.artifactrepo.jnj.com:443/cpilint
 ```
 
