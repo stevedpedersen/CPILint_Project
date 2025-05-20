@@ -43,13 +43,7 @@
             "org.springframework.*"
         ]
     },
-    "java.configuration.runtimes": [
-        {
-            "name": "JavaSE-17",
-            "path": "C:\\Users\\Steve\\.jdks\\jdk-17.0.14",
-            "default": true
-        }
-    ],
+
     "java.compile.nullAnalysis.mode": "automatic",
     "java.compile.problems": {
         "maxProblems": 1000,
